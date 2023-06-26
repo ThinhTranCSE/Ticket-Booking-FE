@@ -1,0 +1,93 @@
+<template>
+    <b-container class="mt-5">
+        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+            <b-form-group
+            id="input-group-1"
+            label="Username:"
+            label-for="input-1"
+            >
+                <b-form-input
+                id="input-1"
+                v-model="form.username"
+                placeholder="Enter username"
+                required
+                ></b-form-input>
+            </b-form-group>
+            <b-form-group
+            id="input-group-2"
+            label="Password:"
+            label-for="input-1"
+            >
+                <b-form-input
+                id="input-2"
+                v-model="form.password"
+                placeholder="Enter password"
+                type="password"
+                required
+                ></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary" style="float: right">Submit</b-button>
+            <b-button type="reset" variant="danger" style="float: right">Reset</b-button>
+            <div style="clear: both"></div>
+        </b-form>
+
+    </b-container>
+</template>
+
+<script>
+import httpCommon from '../http-common';
+
+export default {
+    name: 'SignInView',
+    data(){
+        return {
+            form: {
+                username: '',
+                password: ''
+            },
+            show: true,
+        }
+    },
+    methods: {
+        async onSubmit(event){
+            event.preventDefault();
+            try{
+                const { data } = await httpCommon.post('auth/login', this.form)
+                .finally(() => {
+                    this.form.username = '';
+                    this.form.password = '';
+
+                    this.show = false
+                    this.$nextTick(() => {
+                        this.show = true
+                    })
+                })
+                this.$store.commit('setUser', data.user);
+                this.$store.commit('setToken', data.token);
+
+                
+            }
+            catch(err){
+                console.log(err);
+                
+            }
+
+        },
+        onReset(event){
+            event.preventDefault();
+
+            this.form.username = '';
+            this.form.password = '';
+
+            this.show = false
+            this.$nextTick(() => {
+                this.show = true
+            })
+        },
+    }
+}
+</script>
+
+<style scoped>
+
+</style>

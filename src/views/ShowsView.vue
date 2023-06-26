@@ -9,10 +9,16 @@
         <b-alert v-if="shows_selected.length != 0"  variant="success" show>Suất chiếu đã chọn:  {{ new Date(shows_selected[0].show_time).toLocaleTimeString() }} {{ new Date(shows_selected[0].show_time).toLocaleDateString() }}</b-alert>
         <b-alert v-else variant="danger" show>Bạn chưa chọn suất chiếu</b-alert>
         
+        <b-form-group label="Tìm kiếm suất chiếu theo:" class="mt-5">
+            <b-form-radio v-model="isStartSearchByMovie" name="search-type-radios" :value="true">Phim</b-form-radio>
+            <b-form-radio v-model="isStartSearchByMovie" name="search-type-radios" :value="false">Rạp</b-form-radio>
+        </b-form-group>
+
+
         <b-tabs content-class="mt-3" class="mt-5">
-            <b-tab title="Phim" active>
+            <b-tab title="Phim" :active="isStartSearchByMovie" :disabled="isStartSearchByMovie ? false : (theaters_selected.length == 0 ? true : false)">
                 <b-table
-                    :items="movies_items"
+                    :items="moviesItems"
                     :fields="movies_fields"
                     select-mode="single"
                     selectable
@@ -24,9 +30,9 @@
                     </template>
                 </b-table>
             </b-tab>
-            <b-tab title="Rạp">
+            <b-tab title="Rạp" :active="!isStartSearchByMovie" :disabled="!isStartSearchByMovie ? false : (movies_selected.length == 0 ? true : false)">
                 <b-table
-                    :items="theaters_items"
+                    :items="theatersItems"
                     :fields="theaters_fields"
                     select-mode="single"
                     selectable
@@ -36,7 +42,7 @@
             </b-tab>
             <b-tab title="Suất chiếu" :disabled="theaters_selected.length == 0 || movies_selected.length == 0">
                 <b-table
-                    :items="shows_items"
+                    :items="showsItems"
                     :fields="shows_fields"
                     select-mode="single"
                     selectable
@@ -62,62 +68,72 @@
 </template>
 
 <script>
+import httpCommon from '../http-common';
 export default {
     name: 'ShowsView',
     data(){
         return {
             movies_selected: [],
             movies_fields: ['name', 'duration', 'poster_image'],
-            movies_items: [
-                { id: 0, name: 'Mắt Biếc', duration: 120, poster: 'http://localhost:8000/storage/posters/6.jpg'},
-                { id: 0, name: 'Mắt Biếc 1', duration: 120, poster: 'http://localhost:8000/storage/posters/6.jpg'},
-                { id: 0, name: 'Mắt Biếc 2', duration: 120, poster: 'http://localhost:8000/storage/posters/6.jpg'},
-                { id: 0, name: 'Mắt Biếc 3', duration: 120, poster: 'http://localhost:8000/storage/posters/6.jpg'},
-                { id: 0, name: 'Mắt Biếc 4', duration: 120, poster: 'http://localhost:8000/storage/posters/6.jpg'},
-            ],
+            movies_data : [],
 
             theaters_selected: [],
             theaters_fields: ['name', 'location'],
-            theaters_items: [
-            { id: 0 , name: 'Galaxy Kinh Dương Vương', location: 'Đây là địa chỉ' },
-            { id: 1 , name: 'Galaxy Kinh Dương Vương 1', location: 'Đây là địa chỉ' },
-            { id: 2 , name: 'Galaxy Kinh Dương Vương 2', location: 'Đây là địa chỉ' },
-            { id: 3 , name: 'Galaxy Kinh Dương Vương 3', location: 'Đây là địa chỉ' },
-            { id: 4 , name: 'Galaxy Kinh Dương Vương 4', location: 'Đây là địa chỉ' },
-            { id: 5 , name: 'Galaxy Kinh Dương Vương 5', location: 'Đây là địa chỉ' },
-            ],
+            theaters_data: [],
 
             shows_selected: [],
             shows_fields: ['date', 'time'],
-            shows_items: [
-                {
-                    "id": 1,
-                    "show_time": "2023-05-12 09:10:00",
-                    "movie_id": 6,
-                    "theater_id": 1
-                },
-                {
-                    "id": 1,
-                    "show_time": "2023-05-12 09:10:00",
-                    "movie_id": 6,
-                    "theater_id": 1
-                },
-                {
-                    "id": 1,
-                    "show_time": "2023-05-12 09:10:00",
-                    "movie_id": 6,
-                    "theater_id": 1
-                },
-                {
-                    "id": 1,
-                    "show_time": "2023-04-12 09:10:00",
-                    "movie_id": 6,
-                    "theater_id": 1
-                },
-                
-            ],
+            shows_data: [],
 
+            isStartSearchByMovie: true,
+        }
+    },
+    computed: {
+        moviesItems(){
+            if(this.isStartSearchByMovie){
+                return this.movies_data;
+            }
 
+            if(this.theaters_selected.length == 0){
+                return this.movies_data;
+            }
+            const movie_ids = this.shows_data.filter((show) => {
+                return this.theaters_selected[0].id == show.theater_id;
+            })
+            .map((show) => {
+                return show.movie_id;
+            });
+
+            const movie_data_filtered = this.movies_data.filter((movie) => {
+                return movie_ids.includes(movie.id);
+            })
+
+            return movie_data_filtered;
+        },
+        theatersItems(){
+            if(!this.isStartSearchByMovie){
+                return this.theaters_data;
+            }
+
+            if(this.movies_selected.length == 0){
+                return this.theaters_data;
+            }
+            const theater_ids = this.shows_data.filter((show) => {
+                return this.movies_selected[0].id == show.movie_id;
+            })
+            .map((show) => {
+                return show.theater_id;
+            })
+            const theater_data_filtered = this.theaters_data.filter((theater) => {
+                return theater_ids.includes(theater.id);
+            })
+            return theater_data_filtered;
+        },
+        showsItems(){
+            return this.shows_data.filter((show) => {
+                if(this.movies_selected.length == 0 || this.theaters_selected.length == 0) return true;
+                return show.movie_id == this.movies_selected[0].id && show.theater_id == this.theaters_selected[0].id;
+            })
         }
     },
     methods: {
@@ -130,10 +146,43 @@ export default {
         onShowsRowSelected(items){
             this.shows_selected = items;
         },
-        onSubmitBooking(){
-            console.log('pushed')
+        async onSubmitBooking(){
+            if(!this.$store.state.token){
+                this.$router.push({path: '/signin'});
+            }
+            try{
+                const { data } = await httpCommon.post('bookings', {
+                    show_id: this.shows_selected[0].id,
+                    user_id: this.$store.state.user.id
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.token}`,
+                    }
+                });
+                console.log(data);
+            }
+            catch(err){
+                console.log(err);
+            }
+
+        }
+    },
+    async created(){
+        try{
+            const [movies_res, theaters_res, shows_res] = await Promise.all([
+                httpCommon.get('/movies'),
+                httpCommon.get('/theaters'),
+                httpCommon.get('/shows'),
+            ]);
+            this.movies_data = movies_res.data.data;
+            this.theaters_data = theaters_res.data.data;
+            this.shows_data = shows_res.data.data;
+        }
+        catch(err){
+            console.log(err);
         }
     }
+
 }
 </script>
 

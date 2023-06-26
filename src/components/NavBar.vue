@@ -2,9 +2,9 @@
     <b-navbar class="nav-bar" toggleable="lg" type="dark" variant="dark" >
         <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-            <b-nav-item class="nav-item" to="/" :class="{ active: curRouteName == 'home'}" @click="handleClickEvent">Phim</b-nav-item>
-            <b-nav-item class="nav-item" to="/theaters" :class="{ active: curRouteName == 'theaters'}" @click="handleClickEvent" >Rạp</b-nav-item>
-            <b-nav-item class="nav-item" to="/shows" :class="{ active: curRouteName == 'shows'}" @click="handleClickEvent">Suất Chiếu</b-nav-item>
+            <b-nav-item class="nav-item" to="/" :class="{ active: $route.name == 'home'}" @click="handleClickEvent">Phim</b-nav-item>
+            <b-nav-item class="nav-item" to="/theaters" :class="{ active: $route.name == 'theaters'}" @click="handleClickEvent" >Rạp</b-nav-item>
+            <b-nav-item class="nav-item" to="/shows" :class="{ active: $route.name == 'shows'}" @click="handleClickEvent">Suất Chiếu</b-nav-item>
         </b-navbar-nav>
         </b-collapse>
     </b-navbar>
@@ -15,7 +15,7 @@
         name: 'NavBar',
         data(){
             return {
-                curRouteName: this.$route.name,
+
             }
         },
         methods: {
