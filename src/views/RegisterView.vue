@@ -1,6 +1,6 @@
 <template>
     <b-container class="mt-5">
-        <h3 class="mb-5">Đăng nhập</h3>
+        <h3 class="mb-5">Đăng ký</h3>
         <b-form @submit="onSubmit" @reset="onReset" v-if="show">
             <b-form-group
             id="input-group-1"
@@ -14,6 +14,7 @@
                 required
                 ></b-form-input>
             </b-form-group>
+
             <b-form-group
             id="input-group-2"
             label="Password:"
@@ -27,15 +28,16 @@
                 required
                 ></b-form-input>
             </b-form-group>
+
             <b-button type="submit" variant="primary" style="float: right">Submit</b-button>
             <b-button type="reset" variant="danger" style="float: right">Reset</b-button>
             <div style="clear: both"></div>
         </b-form>
         <b-modal ok-only ref="successful-modal" ok-variant="success" title="Chúc mừng" >
-            Đăng nhập thành công!!
+            Đăng ký thành công!!
         </b-modal>
         <b-modal ref="failed-modal" ok-variant="danger" title="Thất bại" >
-            Username hoặc password không đúng!!
+            Hãy thử lại với thông tin khác!!
         </b-modal>
     </b-container>
 </template>
@@ -44,12 +46,12 @@
 import httpCommon from '../http-common';
 
 export default {
-    name: 'SignInView',
+    name: 'RegisterView',
     data(){
         return {
             form: {
                 username: '',
-                password: ''
+                password: '',
             },
             show: true,
         }
@@ -58,7 +60,7 @@ export default {
         async onSubmit(event){
             event.preventDefault();
             try{
-                const { data } = await httpCommon.post('auth/login', this.form)
+                const { data } = await httpCommon.post('auth/register', this.form)
                 .finally(() => {
                     this.form.username = '';
                     this.form.password = '';
@@ -72,7 +74,7 @@ export default {
                 this.$store.commit('setToken', data.token);
                 httpCommon.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token;
                 this.$refs['successful-modal'].show();
-            }
+            }   
             catch(err){
                 console.log(err);
                 this.$refs['failed-modal'].show();
@@ -90,7 +92,8 @@ export default {
                 this.show = true
             })
         },
-    }
+    },
+
 }
 </script>
 

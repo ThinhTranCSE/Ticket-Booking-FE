@@ -15,21 +15,20 @@
 </template>
 
 <script>
-
-    export default {
-        name: 'PosterCard',
-        props: {
-            movieData: Object,
-        },
-        data(){
-            return {
-                
-            }
-        },
-        methods: {
+export default {
+    name: 'PosterCard',
+    props: {
+        movieData: Object,
+    },
+    data(){
+        return {
             
         }
+    },
+    methods: {
+        
     }
+}
 </script>
 
 <style scoped>

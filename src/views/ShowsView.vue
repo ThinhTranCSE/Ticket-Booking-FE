@@ -56,9 +56,12 @@
                         {{ item.show_time.split(' ')[1].slice(0, 5) }}
                     </template>
                 </b-table>
-                <b-button style="float: right" size="md" variant="outline-primary" v-b-modal.successful_modal @click="onSubmitBooking">Đặt vé</b-button>
-                <b-modal ok-only id="successful_modal" ok-variant="success" title="Chúc mừng" >
+                <b-button style="float: right" size="md" variant="outline-primary" @click="onSubmitBooking">Đặt vé</b-button>
+                <b-modal ok-only ref="successful-modal" ok-variant="success" title="Chúc mừng" >
                     Bạn đã đặt vé thành công!!
+                </b-modal>
+                <b-modal ref="failed-modal" ok-variant="danger" title="Thất bại" >
+                    Đặt vé không thành công!!
                 </b-modal>
                 
                 <div style="clear: both"></div>
@@ -154,15 +157,13 @@ export default {
                 const { data } = await httpCommon.post('bookings', {
                     show_id: this.shows_selected[0].id,
                     user_id: this.$store.state.user.id
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.state.token}`,
-                    }
                 });
+                this.$refs['successful-modal'].show();
                 console.log(data);
             }
             catch(err){
                 console.log(err);
+                this.$refs['failed-modal'].show();
             }
 
         }

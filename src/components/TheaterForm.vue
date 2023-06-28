@@ -1,99 +1,103 @@
 <template>
-    <b-container class="mt-5">
-        <h3 class="mb-5">Đăng nhập</h3>
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <b-container>
+        <b-form @submit="onSubmit" @reset="onReset" v-if="show" class="mt-3">
             <b-form-group
             id="input-group-1"
-            label="Username:"
+            label="Name:"
             label-for="input-1"
             >
                 <b-form-input
                 id="input-1"
-                v-model="form.username"
-                placeholder="Enter username"
-                required
+                v-model="form.name"
+                placeholder="Enter theater's name"
+                :required="fullRequired"
                 ></b-form-input>
             </b-form-group>
+
             <b-form-group
             id="input-group-2"
-            label="Password:"
+            label="Location:"
             label-for="input-2"
             >
                 <b-form-input
                 id="input-2"
-                v-model="form.password"
-                placeholder="Enter password"
-                type="password"
-                required
+                v-model="form.location"
+                placeholder="Enter location"
+                :required="fullRequired"
                 ></b-form-input>
             </b-form-group>
+
+
             <b-button type="submit" variant="primary" style="float: right">Submit</b-button>
             <b-button type="reset" variant="danger" style="float: right">Reset</b-button>
             <div style="clear: both"></div>
         </b-form>
+
         <b-modal ok-only ref="successful-modal" ok-variant="success" title="Chúc mừng" >
-            Đăng nhập thành công!!
+            {{ successfulMessage }}
         </b-modal>
         <b-modal ref="failed-modal" ok-variant="danger" title="Thất bại" >
-            Username hoặc password không đúng!!
+            {{ failedMessage }}
         </b-modal>
-    </b-container>
+    </b-container> 
 </template>
 
 <script>
-import httpCommon from '../http-common';
-
 export default {
-    name: 'SignInView',
+    name: 'TheaterForm',
+    props:{
+        onFormSubmit: {type: Function},
+        initialName: String,
+        initialLocation: String,
+        successfulMessage: String,
+        failedMessage: String,
+        fullRequired: Boolean
+    },
     data(){
-        return {
+        return{
             form: {
-                username: '',
-                password: ''
+                name: this.initialName || '',
+                location: this.initialLocation || '',
             },
             show: true,
         }
     },
-    methods: {
+    methods:{
         async onSubmit(event){
             event.preventDefault();
             try{
-                const { data } = await httpCommon.post('auth/login', this.form)
+                const { data } = await this.onFormSubmit(this.form)
                 .finally(() => {
-                    this.form.username = '';
-                    this.form.password = '';
+                    this.form.name = '';
+                    this.form.location = '';
 
                     this.show = false
                     this.$nextTick(() => {
                         this.show = true
                     })
                 })
-                this.$store.commit('setUser', data.user);
-                this.$store.commit('setToken', data.token);
-                httpCommon.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token;
                 this.$refs['successful-modal'].show();
+                this.$emit('update-theater', data.data);
+                this.$emit('create-theater', data.data);
             }
             catch(err){
                 console.log(err);
                 this.$refs['failed-modal'].show();
             }
-
-        },
+        },    
         onReset(event){
             event.preventDefault();
 
-            this.form.username = '';
-            this.form.password = '';
+            this.form.name = '';
+            this.form.location = '';
+
 
             this.show = false
             this.$nextTick(() => {
                 this.show = true
             })
         },
-    }
+    },
+
 }
 </script>
-
-<style scoped>
-
-</style>

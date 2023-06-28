@@ -7,7 +7,10 @@ import MovieView from './views/MovieView.vue'
 import TheaterView from './views/TheatersView.vue'
 import ShowsView from './views/ShowsView.vue'
 import SignInView from './views/SignInView.vue'
-import UserProfile from './views/UserProfile.vue'
+import UserProfileView from './views/UserProfileView.vue'
+import RegisterView from './views/RegisterView.vue'
+import AdminCP from './views/AdminCP.vue'
+import Dashboard from './views/Dashboard.vue'
 
 Vue.use(Router)
 
@@ -42,7 +45,22 @@ export default new VueRouter({
         {
             path: '/profile',
             name: 'profile',
-            component: UserProfile
+            component: UserProfileView
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: RegisterView
+        },
+        {
+            path: '/admincp',
+            name: 'admincp',
+            component: AdminCP
+        },
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: Dashboard
         }
 
     ]

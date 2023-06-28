@@ -6,6 +6,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import VueRouter from './router'
 import VueXStore from './store'
+
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 

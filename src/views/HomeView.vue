@@ -1,6 +1,6 @@
 <template>
     <b-container class="mt-4">
-      <poster-card-list :movies-data="movies_data"></poster-card-list>
+      <PosterCardList :movies-data="movies_data"></PosterCardList>
     </b-container>
 </template>
 
@@ -24,7 +24,7 @@ export default {
   },
   components: {
     PosterCardList,
-  },
+},
   async created(){
     try{
         const { data } = await httpCommon.get('/movies');

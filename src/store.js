@@ -2,7 +2,6 @@ import Vuex from 'vuex';
 import Vue from 'vue';
 import createPersistedState from "vuex-plugin-persistedstate";
 
-
 // Load Vuex
 Vue.use(Vuex);
 // Create store
