@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import MovieAdminCP from '../components/MovieAdminCP.vue'
-import TheaterAdminCP from '../components/TheaterAdminCP.vue'
-import ShowAdminCP from '../components/ShowAdminCP.vue';
+import MovieAdminCP from '../components/AdminCP/MovieAdminCP.vue'
+import TheaterAdminCP from '../components/AdminCP/TheaterAdminCP.vue'
+import ShowAdminCP from '../components/AdminCP/ShowAdminCP.vue';
 
 export default {
     name: 'AdminCP',

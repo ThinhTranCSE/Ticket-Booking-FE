@@ -16,14 +16,7 @@ export default new Vuex.Store({
       },
       setToken(state, token){
         state.token = token;
-      },
-      deleteUser(state){
-        state.user = null;
-      },
-      deleteToken(state){
-        state.token = null;
-      },
-      
+      },   
     },
 
     plugins: [createPersistedState()]

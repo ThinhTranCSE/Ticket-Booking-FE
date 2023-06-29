@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import httpCommon from '../http-common';
+import httpCommon from '../../http-common';
 export default {
     name: 'TheaterForm',
     props:{

@@ -1,14 +1,14 @@
 <template>
     <b-container>
-        <b-collapse id="theater-form">
-            <TheaterForm 
-            :onFormSubmit="onCreateTheaterFormSubmit"
+        <b-collapse id="movie-form">
+            <MovieForm 
+            :onFormSubmit="onCreateMovieFormSubmit"
             successfulMessage="Thêm thành công!!"
             failedMessage="Thêm không thành công!!"
-            @create-theater="createTheaterEvent"
-            ></TheaterForm>
+            @create-movie="createMovieEvent"
+            ></MovieForm>
         </b-collapse>
-        <b-button v-b-toggle.theater-form variant="primary" class="mt-5">Thêm rạp mới</b-button>
+        <b-button v-b-toggle.movie-form variant="primary" class="mt-5">Thêm phim mới</b-button>
 
         <b-table
             class="mt-3"
@@ -16,22 +16,26 @@
             :fields="fields"
             hover
         >
+            <template #cell(poster_image)="{ item }">
+                <b-img :src="item.poster" width="100"></b-img>
+            </template>
+
             <template #cell(manage)="{ toggleDetails, item}">
                 <div>
                     <b-button @click="toggleDetails" variant="primary">Sửa</b-button>
-                    <b-button variant="danger" @click="() => onDeleteTheater(item.id)">Xóa</b-button>
+                    <b-button variant="danger" @click="() => onDeleteMovie(item.id)">Xóa</b-button>
                 </div>
             </template>
             <template #row-details="{ item, index }">
-                <TheaterForm 
+                <MovieForm 
                 :initialName="item.name" 
-                :initialLocation="item.location" 
-
-                :onFormSubmit="(data) => onUpdateTheaterFormSubmit(data, item.id)"
+                :initialDescription="item.description" 
+                :initialDuration="item.duration" 
+                :onFormSubmit="(data) => onUpdateMovieFormSubmit(data, item.id)"
                 successfulMessage="Sửa thành công!!"
                 failedMessage="Sửa không thành công!!"
-                @update-theater="(e) => updateTheaterEvent(e, index)"
-                ></TheaterForm>
+                @update-movie="(e) => updateMovieEvent(e, index)"
+                ></MovieForm>
             </template>
         </b-table>
 
@@ -45,41 +49,41 @@
  </template>
  
 <script>
-import httpCommon from '../http-common';
-import TheaterForm from './TheaterForm.vue'
+import httpCommon from '../../http-common';
+import MovieForm from './MovieForm.vue'
 export default {
-    name: 'TheaterAdminCP',
+    name: 'MovieAdminCP',
     components:{
-        TheaterForm,
+        MovieForm,
     },
     data(){
         return {
             items: [],
-            fields: ['name', 'location', 'manage'],
+            fields: ['name', 'poster_image', 'manage'],
             successful_message: '',
             failed_message: '',
         }
     },
     methods: {
-        async onCreateTheaterFormSubmit(data){
-            return httpCommon.post('theaters', data, {
+        async onCreateMovieFormSubmit(data){
+            return httpCommon.post('movies', data, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
             });
         },
-        async onUpdateTheaterFormSubmit(data, id){
-            return httpCommon.post(`theaters/${id}?_method=PATCH`, data, {
+        async onUpdateMovieFormSubmit(data, id){
+            return httpCommon.post(`movies/${id}?_method=PATCH`, data, {
                     headers: {
                             'Content-Type': 'multipart/form-data'
                     }
             });
         },
-        async onDeleteTheater(id){
+        async onDeleteMovie(id){
             try{
-                const { data } = await httpCommon.delete(`theaters/${id}`);
-                const deleted_theater = data.data;
-                this.items.splice(this.items.indexOf(deleted_theater), 1);  
+                const { data } = await httpCommon.delete(`movies/${id}`);
+                const deleted_movie = data.data;
+                this.items.splice(this.items.indexOf(deleted_movie), 1);  
                 this.showSuccessfulMessage('Xóa thành công!!'); 
             }
             catch(err){
@@ -95,17 +99,17 @@ export default {
             this.failed_message = msg;
             this.$refs['failed-modal'].show();
         },
-        updateTheaterEvent(updated_theater, old_theater_index){
-            this.items.splice(old_theater_index, 1, updated_theater);
+        updateMovieEvent(updated_movie, old_movie_index){
+            this.items.splice(old_movie_index, 1, updated_movie);
         },
-        createTheaterEvent(created_theater){
-            this.items.push(created_theater);
+        createMovieEvent(created_movie){
+            this.items.push(created_movie);
         }
         
     },
     async created(){
         try{
-            const { data } = await httpCommon.get('theaters');
+            const { data } = await httpCommon.get('movies');
             this.items = data.data;
         }
         catch(err){

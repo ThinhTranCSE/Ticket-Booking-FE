@@ -31,8 +31,8 @@ export default {
             try{
                 const { data } = httpCommon.delete('auth/logout');
                 console.log(data);
-                this.$store.commit('deleteUser');
-                this.$store.commit('deleteToken');
+                this.$store.commit('setUser', null);
+                this.$store.commit('setToken', null);
             }
             catch(err){
                 console.log(err);

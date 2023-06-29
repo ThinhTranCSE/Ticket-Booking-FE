@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import httpCommon from '../http-common';
+import httpCommon from '../../http-common';
 import ShowForm from './ShowForm.vue';
 
 export default {
