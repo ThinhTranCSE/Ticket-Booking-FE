@@ -15,7 +15,14 @@
             :items="items"
             :fields="fields"
             hover
+            :busy="is_busy"
         >
+            <template #table-busy>
+                <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading...</strong>
+                </div>
+            </template>
             <template #cell(poster_image)="{ item }">
                 <b-img :src="item.poster" width="100"></b-img>
             </template>
@@ -62,6 +69,7 @@ export default {
             fields: ['name', 'poster_image', 'manage'],
             successful_message: '',
             failed_message: '',
+            is_busy: false,
         }
     },
     methods: {
@@ -109,8 +117,13 @@ export default {
     },
     async created(){
         try{
+            this.is_busy = true;
+            setTimeout(() => this.is_busy = false, 3000);
+
             const { data } = await httpCommon.get('movies');
             this.items = data.data;
+
+            this.is_busy = false;
         }
         catch(err){
             console.log(err);

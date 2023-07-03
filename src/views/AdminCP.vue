@@ -1,18 +1,5 @@
 <template>
     <b-container>
-            <!-- <b-form-radio-group
-                v-model="state"
-                class="mt-3"
-            >
-                <b-form-radio value="movie">Phim</b-form-radio>
-                <b-form-radio value="theater">Rạp</b-form-radio>
-                <b-form-radio value="show">Suất chiếu</b-form-radio>
-            </b-form-radio-group>
-
-            <MovieAdminCP v-if="state == 'movie'"></MovieAdminCP>
-            <TheaterAdminCP v-if="state == 'theater'"></TheaterAdminCP>
-            <ShowAdminCP v-if="state == 'show'"></ShowAdminCP> -->
-
             <b-tabs content-class="mt-3" class="mt-5">
                 <b-tab title="Phim" active @click="() => this.state = 'movie'">
                     <MovieAdminCP v-if="state == 'movie'"></MovieAdminCP>

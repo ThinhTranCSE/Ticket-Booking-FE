@@ -15,7 +15,14 @@
             :items="items"
             :fields="fields"
             hover
+            :busy="is_busy"
         >
+            <template #table-busy>
+                <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading...</strong>
+                </div>
+            </template>
             <template #cell(manage)="{ toggleDetails, item}">
                 <div>
                     <b-button @click="toggleDetails" variant="primary">Sửa</b-button>
@@ -58,6 +65,7 @@ export default {
             fields: ['name', 'location', 'manage'],
             successful_message: '',
             failed_message: '',
+            is_busy: false,
         }
     },
     methods: {
@@ -105,8 +113,13 @@ export default {
     },
     async created(){
         try{
+            this.is_busy = true;
+            setTimeout(() => this.is_busy = false, 3000);
+
             const { data } = await httpCommon.get('theaters');
             this.items = data.data;
+
+            this.is_busy = false;
         }
         catch(err){
             console.log(err);

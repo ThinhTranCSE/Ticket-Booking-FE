@@ -61,7 +61,7 @@
 <script>
 import httpCommon from '../../http-common';
 export default {
-    name: 'TheaterForm',
+    name: 'ShowForm',
     props:{
         
     },

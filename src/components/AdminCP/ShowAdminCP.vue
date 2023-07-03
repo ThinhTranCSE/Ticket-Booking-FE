@@ -10,7 +10,14 @@
             :items="items"
             :fields="fields"
             hover
+            :busy="is_busy"
         >
+            <template #table-busy>
+                <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading...</strong>
+                </div>
+            </template>
             <template #cell(date)="{ item }">
                 {{ new Date(item.show_time.split(' ')[0]).toLocaleDateString()  }}
             </template>
@@ -51,14 +58,20 @@ export default {
             items: [],
             fields: [ 'time', 'date', 'movie_name', 'poster_image', 'theater_name', 'manage'],
             successful_message: '',
-            failed_message: ''
+            failed_message: '',
+            is_busy: false,
         }
     },
     async created(){
         try{
+            this.is_busy = true;
+            setTimeout(() => this.is_busy = false, 3000);
+
             const { data } = await httpCommon.get('shows/details');
             this.items = data.data;
             console.log(this.items);
+
+            this.is_busy = false;
         }
         catch(err){
             console.log(err);

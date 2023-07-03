@@ -101,7 +101,6 @@ export default {
   watch: {
       data(val){
         this.chartData.datasets[0].data = val;
-        console.log(this.chartData.datasets[0].data)
       },
       labels(val){
         this.chartData.labels = val;

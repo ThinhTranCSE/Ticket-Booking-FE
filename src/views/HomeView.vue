@@ -1,7 +1,9 @@
 <template>
+  <b-overlay :show="is_busy">
     <b-container class="mt-4">
-      <PosterCardList :movies-data="movies_data"></PosterCardList>
+        <PosterCardList :movies-data="movies_data"></PosterCardList>
     </b-container>
+  </b-overlay>
 </template>
 
 
@@ -14,21 +16,21 @@ export default {
   data(){
     return {
       movies_data: [],
+      is_busy: false,
     }
-  },
-  props: {
-
-  },
-  methods: {
-
   },
   components: {
     PosterCardList,
 },
   async created(){
     try{
+        this.is_busy = true;
+        setTimeout(() => this.is_busy = false, 3000);
+
         const { data } = await httpCommon.get('/movies');
         this.movies_data = data.data;
+
+        this.is_busy = false;
     }
     catch(err){
         console.log(err);

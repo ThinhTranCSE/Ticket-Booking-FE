@@ -99,7 +99,6 @@
       labels(val){
         this.chartData.labels = val;
         this.chartData.datasets[0].backgroundColor = this.chartData.labels.map(label => this.generateRandomColor());
-        console.log(this.chartData.datasets)
       }
     },
     methods: {

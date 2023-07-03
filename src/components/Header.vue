@@ -12,7 +12,7 @@
             <div class="col-md-3 d-flex login-link-container justify-content-around">
                 <router-link v-if="!$store.state.user" to="/signin" class="align-self-center">Đăng nhập</router-link>
                 <router-link v-if="!$store.state.user" to="/register" class="align-self-center">Đăng ký</router-link>
-                <router-link v-else to="/profile" class="align-self-center">{{ $store.state.user.username }}</router-link>
+                <router-link v-else :to="$store.state.user.role == 'user' ? '/profile' : '/admin'" class="align-self-center">{{ $store.state.user.username }}</router-link>
             </div>
         </div>
     </div>

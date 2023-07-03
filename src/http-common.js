@@ -1,6 +1,8 @@
 import axios from 'axios';
+import store from './store';
 
-const token = JSON.parse(localStorage.getItem('VUEX-PERSISTEDSTATE')).value.setToken;
+const storedJson = JSON.parse(localStorage.getItem('VUEX-PERSISTEDSTATE'));
+const token = storedJson ?  storedJson.value.setToken : null;
 export default axios.create({
     baseURL: 'http://localhost:8000/api',
     headers: {

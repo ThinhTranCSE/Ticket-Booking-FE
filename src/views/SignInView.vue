@@ -71,6 +71,8 @@ export default {
                 this.$store.commit('setUser', data.user);
                 this.$store.commit('setToken', data.token);
                 httpCommon.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token;
+                data.user.role == 'admin' ? this.$router.push('/admin') : this.$router.push('/');
+                location.reload();
                 this.$refs['successful-modal'].show();
             }
             catch(err){

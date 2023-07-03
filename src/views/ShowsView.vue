@@ -24,7 +24,14 @@
                     selectable
                     hover
                     @row-selected="onMoviesRowSelected"
+                    :busy="is_busy"
                 >
+                    <template #table-busy>
+                        <div class="text-center text-danger my-2">
+                        <b-spinner class="align-middle"></b-spinner>
+                        <strong>Loading...</strong>
+                        </div>
+                    </template>
                     <template #cell(poster_image)="{ item }">
                         <b-img :src="item.poster" width="100"></b-img>
                     </template>
@@ -89,6 +96,7 @@ export default {
             shows_data: [],
 
             isStartSearchByMovie: true,
+            is_busy: false,
         }
     },
     computed: {
@@ -170,6 +178,9 @@ export default {
     },
     async created(){
         try{
+            this.is_busy = true;
+            setTimeout(() => this.is_busy = false, 3000);
+            
             const [movies_res, theaters_res, shows_res] = await Promise.all([
                 httpCommon.get('/movies'),
                 httpCommon.get('/theaters'),
@@ -178,6 +189,8 @@ export default {
             this.movies_data = movies_res.data.data;
             this.theaters_data = theaters_res.data.data;
             this.shows_data = shows_res.data.data;
+
+            this.is_busy = false;
         }
         catch(err){
             console.log(err);

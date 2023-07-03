@@ -1,8 +1,7 @@
 <template>
-  
   <b-containter id="app" fluid>
     <header-vue/>
-      <nav-bar-vue/>
+      <!-- <nav-bar-vue/> -->
       <router-view class="view"/>
     <footer-vue/>
   </b-containter>
@@ -22,12 +21,10 @@ export default {
     NavBarVue,
     FooterVue,
   },
-
-
 }
 </script>
 
-<style scoped>
+<style>
   .view{
     min-height: 800px;
   }
